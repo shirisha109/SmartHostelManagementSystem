@@ -12,7 +12,12 @@ import java.util.List;
 public class StudentDAO {
 
     public boolean addStudent(Student student) {
-        String sql = "INSERT INTO students (id, name, phone, address, gender, branch, year, parent_phone, hostel_block, room_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        return addStudent(student, null);
+    }
+
+    /** Admin-created accounts store the supplied password in the existing students table. */
+    public boolean addStudent(Student student, String password) {
+        String sql = "INSERT INTO students (id, name, phone, address, gender, branch, year, parent_phone, hostel_block, room_number, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -27,6 +32,7 @@ public class StudentDAO {
             ps.setString(8, student.getParentPhone());
             ps.setString(9, student.getHostelBlock());
             ps.setInt(10, student.getRoomNumber());
+            ps.setString(11, password);
 
             return ps.executeUpdate() > 0;
 
@@ -135,5 +141,16 @@ public class StudentDAO {
         }
 
         return students;
+    }
+
+    public Student authenticate(int id, String password) {
+        String sql = "SELECT * FROM students WHERE id = ? AND password = ?";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id); ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) return new Student(rs.getInt("id"), rs.getString("name"), rs.getString("phone"), rs.getString("address"), rs.getString("gender"), rs.getString("branch"), rs.getInt("year"), rs.getString("parent_phone"), rs.getString("hostel_block"), rs.getInt("room_number"));
+            }
+        } catch (SQLException e) { System.out.println("Error authenticating student: " + e.getMessage()); }
+        return null;
     }
 }

@@ -1,0 +1,3 @@
+.login-tabs { display: flex; gap: 8px; margin-top: 20px; }
+.login-tabs button { flex: 1; background: #e8effc; color: #245bc1; }
+.login-tabs button.active { background: var(--blue); color: #fff; }

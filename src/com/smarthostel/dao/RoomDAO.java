@@ -140,6 +140,14 @@ public class RoomDAO {
         }
     }
 
+    public Room findByRoomNumber(int roomNumber) {
+        String sql = "SELECT room_number, block, capacity, occupied_beds FROM rooms WHERE room_number = ?";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, roomNumber);
+            try (ResultSet rs = ps.executeQuery()) { return rs.next() ? new Room(rs.getInt("room_number"), rs.getString("block"), rs.getInt("capacity"), rs.getInt("occupied_beds")) : null; }
+        } catch (SQLException e) { System.out.println("Error loading room: " + e.getMessage()); return null; }
+    }
+
     private boolean isValidRoom(Room room) {
         if (room.getRoomNumber() <= 0) {
             System.out.println("Room number must be a positive whole number.");

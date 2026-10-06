@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS students (
     year INT,
     parent_phone VARCHAR(20),
     hostel_block VARCHAR(50),
-    room_number INT
+    room_number INT,
+    password VARCHAR(100)
 );
 
 CREATE TABLE IF NOT EXISTS rooms (

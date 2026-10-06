@@ -116,4 +116,19 @@ public class ComplaintDAO {
             return false;
         }
     }
+
+    public List<Complaint> viewComplaintsByStudent(int studentId) {
+        List<Complaint> complaints = new ArrayList<>();
+        String sql = "SELECT complaint_id, student_id, category, description, date, status FROM complaints WHERE student_id = ? ORDER BY complaint_id DESC";
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, studentId);
+            try (ResultSet rs = ps.executeQuery()) { while (rs.next()) complaints.add(new Complaint(rs.getInt("complaint_id"), rs.getInt("student_id"), rs.getString("category"), rs.getString("description"), rs.getString("date"), rs.getString("status"))); }
+        } catch (SQLException e) { System.out.println("Error loading student complaints: " + e.getMessage()); }
+        return complaints;
+    }
+
+    public int nextComplaintId() {
+        try (Connection conn = DatabaseConnection.getConnection(); PreparedStatement ps = conn.prepareStatement("SELECT COALESCE(MAX(complaint_id), 0) + 1 FROM complaints"); ResultSet rs = ps.executeQuery()) { return rs.next() ? rs.getInt(1) : 1; }
+        catch (SQLException e) { throw new IllegalStateException("Unable to create complaint ID", e); }
+    }
 }

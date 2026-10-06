@@ -25,6 +25,10 @@ public class HostelService {
         return studentDAO.addStudent(student);
     }
 
+    public boolean addStudent(Student student, String password) {
+        return studentDAO.addStudent(student, password);
+    }
+
     public boolean updateStudent(Student student) {
         return studentDAO.updateStudent(student);
     }
@@ -40,6 +44,8 @@ public class HostelService {
     public List<Student> viewAllStudents() {
         return studentDAO.viewAllStudents();
     }
+
+    public Student authenticateStudent(int id, String password) { return studentDAO.authenticate(id, password); }
 
     // Room operations
     public boolean addRoom(Room room) {
@@ -66,6 +72,8 @@ public class HostelService {
         return roomDAO.vacateRoom(roomNumber);
     }
 
+    public Room findRoom(int roomNumber) { return roomDAO.findByRoomNumber(roomNumber); }
+
     // Complaint operations
     public boolean registerComplaint(Complaint complaint) {
         return complaintDAO.registerComplaint(complaint);
@@ -86,6 +94,9 @@ public class HostelService {
     public boolean deleteComplaint(int complaintId) {
         return complaintDAO.deleteComplaint(complaintId);
     }
+
+    public List<Complaint> viewComplaintsByStudent(int studentId) { return complaintDAO.viewComplaintsByStudent(studentId); }
+    public int nextComplaintId() { return complaintDAO.nextComplaintId(); }
 
     // Dashboard summary methods
     public int getTotalStudents() {
@@ -120,5 +131,25 @@ public class HostelService {
         }
 
         return pending;
+    }
+
+    public int getResolvedComplaints() {
+        int resolved = 0;
+        for (Complaint complaint : viewAllComplaints()) {
+            if ("Resolved".equalsIgnoreCase(complaint.getStatus())) {
+                resolved++;
+            }
+        }
+        return resolved;
+    }
+
+    public int getOccupiedRooms() {
+        int occupied = 0;
+        for (Room room : viewAllRooms()) {
+            if (room.getOccupiedBeds() > 0) {
+                occupied++;
+            }
+        }
+        return occupied;
     }
 }
