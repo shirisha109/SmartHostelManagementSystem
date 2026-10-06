@@ -1,5 +1,6 @@
 package com.smarthostel.database;
 
+import com.smarthostel.config.EnvConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,12 +9,12 @@ public class DatabaseConnection {
 
     private static final String DEFAULT_URL =
             "jdbc:mysql://localhost:3306/smart_hostel_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String URL = getEnvironmentValue("MYSQL_URL", DEFAULT_URL);
-    private static final String USERNAME = getEnvironmentValue("MYSQL_USERNAME", "root");
-    private static final String PASSWORD = getEnvironmentValue("MYSQL_PASSWORD", "Hms@123prjct");
+    private static final String URL = getConfigurationValue("MYSQL_URL", DEFAULT_URL);
+    private static final String USERNAME = getConfigurationValue("MYSQL_USERNAME", "root");
+    private static final String PASSWORD = EnvConfig.get("MYSQL_PASSWORD");
 
-    private static String getEnvironmentValue(String name, String defaultValue) {
-        String value = System.getenv(name);
+    private static String getConfigurationValue(String name, String defaultValue) {
+        String value = EnvConfig.get(name);
         return value == null || value.isBlank() ? defaultValue : value;
     }
 

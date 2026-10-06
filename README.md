@@ -30,13 +30,13 @@ The project deliberately uses only Java's built-in HTTP server plus JDBC, keepin
 
 1. Start MySQL.
 2. Run [database.sql](database.sql) to create `smart_hostel_db` and its tables.
-3. Set credentials if they differ from the current local defaults:
+3. Configure the MySQL password in the ignored `.env` file (or in the process environment). The application defaults to the local URL below and the `root` user; the password is read from `MYSQL_PASSWORD` and has no hard-coded default:
 
 ```powershell
-$env:MYSQL_URL='jdbc:mysql://localhost:3306/smart_hostel_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC'
-$env:MYSQL_USERNAME='root'
-$env:MYSQL_PASSWORD='your-password'
+Add-Content .env 'MYSQL_PASSWORD=your-local-mysql-password'
 ```
+
+If your MySQL username or URL differs, set `MYSQL_USERNAME` or `MYSQL_URL` in `.env` or the process environment. Never commit `.env`.
 
 Existing tables and data are preserved. Default login after running the schema: `admin` / `admin123`.
 
